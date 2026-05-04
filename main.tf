@@ -116,7 +116,7 @@ resource "aws_lambda_function" "tenable_export" {
   memory_size      = 512
   filename         = data.archive_file.lambda_zip.output_path
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
-  layers           = var.lambda_layer_arns
+  layers           = compact(concat(var.lambda_layer_arns, [var.requests_layer_arn]))
 
   environment {
     variables = {

@@ -25,3 +25,9 @@ variable "lambda_layer_arns" {
   type        = list(string)
   default     = []
 }
+
+variable "requests_layer_arn" {
+  description = "Lambda layer ARN that packages the Python requests dependency used by lambda_function.py"
+  type        = string
+  default     = null
+}
