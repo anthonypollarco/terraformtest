@@ -3,7 +3,7 @@ import json
 import logging
 import os
 import time
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 import boto3
 import requests
@@ -94,15 +94,18 @@ def lambda_handler(event, context):
 
     write_checkpoint(bucket, checkpoint_key, current_time)
 
+    cst = timezone(timedelta(hours=-6), name="CST")
+    run_time_cst = datetime.now(cst)
+
     run_summary = {
-        "run_timestamp_utc": datetime.now(timezone.utc).isoformat(),
+        "run_timestamp_cst": run_time_cst.isoformat(),
         "export_uuid": export_uuid,
         "indexed_since": last_sync,
         "chunk_count": len(chunks),
         "uploaded_files": uploaded_files,
     }
 
-    summary_key = f"{key_prefix}/logs/{datetime.now(timezone.utc).strftime('%Y/%m/%d')}/summary-{export_uuid}.json"
+    summary_key = f"{key_prefix}/logs/{run_time_cst.strftime('%Y/%m/%d')}/summary-{export_uuid}.json"
     s3.put_object(Bucket=bucket, Key=summary_key, Body=json.dumps(run_summary, indent=2).encode("utf-8"), ContentType="application/json")
 
     logging.info("Export completed: %s", json.dumps(run_summary))
