@@ -19,3 +19,9 @@ variable "tenable_secret_arn" {
   description = "ARN of Secrets Manager secret containing Tenable API keys as JSON: {\"accessKey\":\"...\",\"secretKey\":\"...\"}"
   type        = string
 }
+
+variable "lambda_layer_arns" {
+  description = "Optional Lambda layer ARNs (for example, a layer containing requests)"
+  type        = list(string)
+  default     = []
+}
